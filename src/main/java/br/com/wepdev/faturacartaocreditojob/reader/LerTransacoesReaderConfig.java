@@ -31,14 +31,12 @@ public class LerTransacoesReaderConfig {
     }
 
     private RowMapper<Transacao> rowMapperTransacao() {
-
         return new RowMapper<Transacao>() {
+
             @Override
             public Transacao mapRow(ResultSet rs, int rowNum) throws SQLException {
-
                 CartaoCredito cartaoCredito = new CartaoCredito();
                 cartaoCredito.setNumeroCartaoCredito(rs.getInt("numero_cartao_credito"));
-
                 Cliente cliente = new Cliente();
                 cliente.setId(rs.getInt("cliente"));
                 cartaoCredito.setCliente(cliente);
@@ -52,6 +50,7 @@ public class LerTransacoesReaderConfig {
 
                 return transacao;
             }
+
         };
     }
 }

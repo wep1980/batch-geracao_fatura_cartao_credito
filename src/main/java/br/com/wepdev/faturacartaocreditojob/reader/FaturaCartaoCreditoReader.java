@@ -6,7 +6,6 @@ import org.springframework.batch.item.*;
 
 public class FaturaCartaoCreditoReader implements ItemStreamReader<FaturaCartaoCredito> {
 
-
     private ItemStreamReader<Transacao> delegate; // Padrao delegate de leitor
     private Transacao transacaoAtual;
 
@@ -27,14 +26,14 @@ public class FaturaCartaoCreditoReader implements ItemStreamReader<FaturaCartaoC
         Transacao transacao = transacaoAtual;
         transacaoAtual = null;
 
-        if (transacao != null) { // Adicionando todas as faturas em uma unica fatura
+        if (transacao != null) { // Adicionando todas as transacoes em uma unica fatura
             faturaCartaoCredito = new FaturaCartaoCredito();
             faturaCartaoCredito.setCartaoCredito(transacao.getCartaoCredito());
             faturaCartaoCredito.setCliente(transacao.getCartaoCredito().getCliente());
             faturaCartaoCredito.getTransacoes().add(transacao);
 
             while (isTransacaoRelacionada(transacao))
-         faturaCartaoCredito.getTransacoes().add(transacaoAtual);
+                faturaCartaoCredito.getTransacoes().add(transacaoAtual);
         }
         return faturaCartaoCredito;
     }
@@ -45,7 +44,7 @@ public class FaturaCartaoCreditoReader implements ItemStreamReader<FaturaCartaoC
      * @return
      */
     private boolean isTransacaoRelacionada(Transacao transacao) throws Exception {
-        return peek() != null && transacao.getCartaoCredito().getNumeroCartaoCredito() == transacao.getCartaoCredito().getNumeroCartaoCredito();
+        return peek() != null && transacao.getCartaoCredito().getNumeroCartaoCredito() == transacaoAtual.getCartaoCredito().getNumeroCartaoCredito();
     }
 
 
@@ -57,7 +56,7 @@ public class FaturaCartaoCreditoReader implements ItemStreamReader<FaturaCartaoC
 
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
-         delegate.open(executionContext);
+        delegate.open(executionContext);
     }
 
     @Override
@@ -71,4 +70,5 @@ public class FaturaCartaoCreditoReader implements ItemStreamReader<FaturaCartaoC
         delegate.close();
 
     }
+
 }

@@ -2,6 +2,8 @@ package br.com.wepdev.faturacartaocreditojob.step;
 
 import br.com.wepdev.faturacartaocreditojob.dominio.FaturaCartaoCredito;
 import br.com.wepdev.faturacartaocreditojob.dominio.Transacao;
+import br.com.wepdev.faturacartaocreditojob.reader.FaturaCartaoCreditoReader;
+import br.com.wepdev.faturacartaocreditojob.writer.TotalTransacoesFooterCallback;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemProcessor;
@@ -22,7 +24,8 @@ public class FaturaCartaoCreditoStepConfig {
     public Step faturaCartaoCreditoStep(
             ItemStreamReader<Transacao> lerTransacoesReader, // leitor que ler as transacoes armazenadas no banco de dados
             ItemProcessor<FaturaCartaoCredito, FaturaCartaoCredito> carregaDadosClienteProcessor, // Processador que carrega os dados do cliente de cada transação
-            ItemWriter<FaturaCartaoCredito> escreverFaturaCartaoCredito) { // Escritor que escrece a fatura em arquivos
+            ItemWriter<FaturaCartaoCredito> escreverFaturaCartaoCredito,
+            TotalTransacoesFooterCallback listener) { // Escritor que escrece a fatura em arquivos
 
         return stepBuilderFactory
                 .get("faturaCartaoCreditoStep")
@@ -30,6 +33,7 @@ public class FaturaCartaoCreditoStepConfig {
                 .reader(new FaturaCartaoCreditoReader(lerTransacoesReader))
                 .processor(carregaDadosClienteProcessor)
                 .writer(escreverFaturaCartaoCredito)
+                .listener(listener)
                 .build();
     }
 
